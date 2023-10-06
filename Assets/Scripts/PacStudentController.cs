@@ -70,7 +70,6 @@ public class PacStudentController : MonoBehaviour
         }
         else if (currentDirection == UP && IsCloseTo(currentPosition, -84f, 84f))
         {
-            Debug.Log("TURN RIGHT");
             currentDirection = RIGHT;
         }
     }
