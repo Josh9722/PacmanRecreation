@@ -25,38 +25,48 @@ public class StateShowcase : MonoBehaviour
     {
         while (true)
         {
-            
-            if (currentState == 1) {
-                // Alive 
-                animator.SetBool("IsDead", false);
-
-                if (gameObject.name != "PacStudentStateChanger")
-                {
+            // As pacstudent does not have a scared state
+            if (gameObject.name == "PacStudentStateChanger") { 
+                if (currentState == 1) {
+                    // Alive 
+                    animator.SetBool("IsDead", false);
+                } else if (currentState == 2) {
+                    // Dead
+                    animator.SetBool("IsDead", true);
+                } 
+            }
+            else { 
+                if (currentState == 1) { 
+                    // Alive 
+                    animator.SetBool("IsDead", false);
+                    animator.SetBool("IsRecovery", false);
                     animator.SetBool("IsScared", false);
-                }
-            } else if (currentState == 2) {
-                // Dead
-                animator.SetBool("IsDead", true);
-
-                if (gameObject.name != "PacStudentStateChanger")
-                {
+                } else if (currentState == 2) {
+                    // Scared
+                    animator.SetBool("IsDead", false);
+                    animator.SetBool("IsRecovery", false);
+                    animator.SetBool("IsScared", true);
+                } else if (currentState == 3) {
+                    // Recovery
+                    animator.SetBool("IsDead", false);
                     animator.SetBool("IsScared", false);
+                    animator.SetBool("IsRecovery", true);
+                } else if (currentState == 4) { 
+                    animator.SetBool("IsRecovery", false);
+                    animator.SetBool("IsScared", false);
+                    animator.SetBool("IsDead", true);
                 }
-            } else if (currentState == 3) {
-                // Scared
-                animator.SetBool("IsDead", false);
-                animator.SetBool("IsScared", true);
             }
 
-            currentState++;
-            
+            // State incrementation
+            currentState++;            
             if (gameObject.name == "PacStudentStateChanger" && currentState > 2)
             {
                 currentState = 1;
             }
             else 
             {
-                if (currentState > 3)
+                if (currentState > 4)
                 {
                     currentState = 1;
                 }
