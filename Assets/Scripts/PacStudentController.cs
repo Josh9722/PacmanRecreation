@@ -47,10 +47,12 @@ public class PacStudentController : MonoBehaviour
                 StartCoroutine(LerpToPosition(gridTargetPosition));
             } else { 
                 // If can move in the direction of currentInput
-                if (IsWalkable(transform.position + currentInput, lastInput)) {
-                    // Lerp to the next tile
+                if (IsWalkable(transform.position + currentInput, currentInput)) {
+                    GameObject gridTile = GetGridTile(transform.position + currentInput);
+                    Vector3 gridTargetPosition = gridTile.transform.position;
+                    StartCoroutine(LerpToPosition(gridTargetPosition));
                 } else {
-                    // Stop moving
+                    // Stop moving as both the lastInput and currentInput are not walkable
                 }
             }
         }
@@ -78,12 +80,13 @@ public class PacStudentController : MonoBehaviour
         isLerping = true;
         float journeyLength = Vector3.Distance(transform.position, targetPos);
         float startTime = Time.time;
+        float journeyTime = journeyLength / speed;
+        float journeyProgress = 0f;
 
-        while (Time.time < startTime + journeyLength / speed)
+        while (journeyProgress < 1.0f)
         {
-            float distanceCovered = (Time.time - startTime) * speed;
-            float fractionOfJourney = distanceCovered / journeyLength;
-            transform.position = Vector3.Lerp(transform.position, targetPos, fractionOfJourney);
+            journeyProgress += Time.deltaTime / journeyTime;
+            transform.position = Vector3.Lerp(transform.position, targetPos, journeyProgress);
             yield return null;
         }
 
