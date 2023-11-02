@@ -123,9 +123,15 @@ public class PacStudentController : MonoBehaviour
             {
                 foreach (Transform image in row)
                 {
-                    if (!image.gameObject.name.Contains("standardpellet") || image.gameObject == lastVisitedTile)
+                    if (image.gameObject == lastVisitedTile)  
                     {
-                        continue; // Skip this tile if it is not a standard pellet
+                        continue; // Don't include current tile in search
+                    }
+                    
+                    // Exclude tiles that can't be walked on (i.e walls)
+                    if (image.gameObject.name.Contains("corner") || image.gameObject.name.Contains("wall") || image.gameObject.name.Contains("junction"))
+                    {
+                        continue;
                     }
  
                     Vector3 compareDistance = image.position; 
@@ -171,7 +177,7 @@ public class PacStudentController : MonoBehaviour
                 {
                     if (image.gameObject == lastVisitedTile)
                     {
-                        continue; // Skip this tile if it is not a standard pellet
+                        continue; // Don't include current tile in search
                     }
 
                     // Find position of middle of tile (i.e subtract width) 
