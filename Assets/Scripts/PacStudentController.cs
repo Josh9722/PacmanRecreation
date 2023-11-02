@@ -82,18 +82,19 @@ public class PacStudentController : MonoBehaviour
         float startTime = Time.time;
         float journeyTime = journeyLength / speed;
         float journeyProgress = 0f;
+        Vector3 initialPosition = transform.position;
 
         while (journeyProgress < 1.0f)
         {
             journeyProgress += Time.deltaTime / journeyTime;
-            transform.position = Vector3.Lerp(transform.position, targetPos, journeyProgress);
+            transform.position = Vector3.Lerp(initialPosition, targetPos, journeyProgress);
             yield return null;
         }
 
-        transform.position = targetPos;
         lastVisitedTile = GetGridTile(transform.position);
         isLerping = false;
     }
+
 
 
     private bool IsWalkable(Vector3 position, Vector3 direction)
