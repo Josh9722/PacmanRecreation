@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PacStudentController : MonoBehaviour
 {
+    public GameObject emptyTilePrefab; // Prefab to replace standardpellet with
     public Transform map; 
     public GameObject lastVisitedTile; // Ignore targeting for current tile 
 
@@ -91,8 +92,24 @@ public class PacStudentController : MonoBehaviour
             yield return null;
         }
 
-        lastVisitedTile = GetGridTile(transform.position);
+        onTileVisited(); 
         isLerping = false;
+    }
+
+    private void onTileVisited() {
+        // Update pellet to emptyTilePrefab
+        lastVisitedTile = GetGridTile(transform.position); 
+        if (lastVisitedTile.name.Contains("standardpellet")) {
+            // Change properties to match emptyTilePrefab
+            lastVisitedTile.GetComponent<SpriteRenderer>().sprite = emptyTilePrefab.GetComponent<SpriteRenderer>().sprite;
+            lastVisitedTile.name = emptyTilePrefab.name;
+        }
+
+        if (lastVisitedTile.name.Contains("powerpellet")) {
+            // Change properties to match emptyTilePrefab
+            lastVisitedTile.GetComponent<SpriteRenderer>().sprite = emptyTilePrefab.GetComponent<SpriteRenderer>().sprite;
+            lastVisitedTile.name = emptyTilePrefab.name;
+        }
     }
 
 
