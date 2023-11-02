@@ -81,4 +81,20 @@ public class HUDManager : MonoBehaviour
     public void onClickExitButton() {
         SceneManager.LoadScene("StartScene");
     }
+
+    public void removeLife() {
+        Transform heart1 = Lives.transform.GetChild(0);
+        Transform heart2 = Lives.transform.GetChild(1);
+        Transform heart3 = Lives.transform.GetChild(2);
+
+        if (heart1.gameObject.activeSelf) {
+            heart1.gameObject.SetActive(false);
+        } else if (heart2.gameObject.activeSelf) {
+            heart2.gameObject.SetActive(false);
+        } else if (heart3.gameObject.activeSelf) {
+            heart3.gameObject.SetActive(false);
+        } else { 
+            // Game Over:: TODO
+        }
+    }
 }
