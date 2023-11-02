@@ -7,6 +7,7 @@ public class PacStudentController : MonoBehaviour
     public GameObject emptyTilePrefab; // Prefab to replace standardpellet with
     public Transform map; 
     public GameObject lastVisitedTile; // Ignore targeting for current tile 
+    public ParticleSystem dustParticleSystem;
 
 
     // ****** Movement Specific Members ******
@@ -79,6 +80,7 @@ public class PacStudentController : MonoBehaviour
     private IEnumerator LerpToPosition(Vector3 targetPos)
     {
         isLerping = true;
+        dustParticleSystem.Play();
         float journeyLength = Vector3.Distance(transform.position, targetPos);
         float startTime = Time.time;
         float journeyTime = journeyLength / speed;
@@ -92,7 +94,8 @@ public class PacStudentController : MonoBehaviour
             yield return null;
         }
 
-        onTileVisited(); 
+        onTileVisited();
+        dustParticleSystem.Stop();
         isLerping = false;
     }
 
