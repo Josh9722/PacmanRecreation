@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class HUDManager : MonoBehaviour
 {
+    // Model
+    public int score = 0;
+
+    // HUD Elements 
     public GameObject exitButton; 
     public GameObject Score; 
     public GameObject gameTimer;
@@ -32,6 +37,7 @@ public class HUDManager : MonoBehaviour
         gameTimerTimer.Update(Time.deltaTime);
         ghostTimerTimer.Update(Time.deltaTime);
 
+        setScoreText(); 
         setGameTimerText();
         setGhostTimerText();
     }
@@ -64,6 +70,15 @@ public class HUDManager : MonoBehaviour
     public void enableGhostTimer() { 
         ghostTimer.SetActive(true);
         ghostTimerTimer.Start();
+    }
 
+
+    private void setScoreText() { 
+        TextMeshProUGUI scoreText = Score.GetComponentInChildren<TextMeshProUGUI>();
+        scoreText.text = score.ToString();
+    }
+
+    public void onClickExitButton() {
+        SceneManager.LoadScene("StartScene");
     }
 }
