@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class PacStudentController : MonoBehaviour
 {
+    // ****** Movement Specific ******
+    public float speed = 5f;
+    private Vector3 lastInputDirection = Vector3.zero;
+
+
+
+    // ****** Animator ****** 
     private Animator animator;
 
+    // Translating direction to animator parameters
     private const int UP = 2;
     private const int DOWN = 1;
     private const int LEFT = 3;
     private const int RIGHT = 4;
 
-    private int currentDirection = UP;  // Starting direction
-    private float speed = 5.0f;  // Movement speed,
 
     void Start()
     {
@@ -21,60 +27,61 @@ public class PacStudentController : MonoBehaviour
 
     void Update()
     {
-        HandleMovement();
+        // Get player input
+        HandleInput(); 
+
+        // Update character position 
+        HandleCharacterMovement();
+
+        // Update animation
+        //HandleMovementAnimation(); 
+
+        Debug.Log(lastInputDirection); 
     }
 
-    void HandleMovement()
+
+    // ****** MOVEMENT SPECIFIC ******
+    private void HandleInput() {
+        // Gather player input (W, A, S, D keys).
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        // Store the last input direction if the player provides more input.
+        if (horizontalInput != 0 || verticalInput != 0)
+        {
+            lastInputDirection = new Vector3(horizontalInput, verticalInput, 0f);
+        }
+    }
+
+
+    // ****** ANIMATOR SPECIFIC ******
+    void HandleMovementAnimation()
     {
-
-        switch (currentDirection)
+        // Set currentAnimationDirection basesd on lastInputDirection
+        if (lastInputDirection.x > 0)
         {
-            case UP:
-                MoveUp();
-                // TODO: Add condition to change direction to RIGHT
-                break;
-            case DOWN:
-                MoveDown();
-                // TODO: Add condition to change direction to LEFT
-                break;
-            case LEFT:
-                MoveLeft();
-                // TODO: Add condition to change direction to UP
-                break;
-            case RIGHT:
-                MoveRight();
-                // TODO: Add condition to change direction to DOWN
-                break;
+            animator.SetInteger("Direction", RIGHT);
         }
-
-        senseDirectionChange(); // Check for direction change
+        else if (lastInputDirection.x < 0)
+        {
+            animator.SetInteger("Direction", LEFT);
+        }
+        else if (lastInputDirection.y > 0)
+        {
+            animator.SetInteger("Direction", UP);
+        }
+        else if (lastInputDirection.y < 0)
+        {
+            animator.SetInteger("Direction", DOWN);
+        }
     }
 
-    private void senseDirectionChange()
+    public void Die()
     {
-        // Fetch the current position of PacStudent
-        Vector3 currentPosition = transform.position;
-
-        // Check conditions to change direction based on PacStudent's position
-        if (currentDirection == RIGHT && IsCloseTo(currentPosition, -53.3f, 84f))
-        {
-            currentDirection = DOWN;
-        }
-        else if (currentDirection == DOWN && IsCloseTo(currentPosition, -53.3f, 60f))
-        {
-            currentDirection = LEFT;
-        }
-        else if (currentDirection == LEFT && IsCloseTo(currentPosition, -84f, 60f))
-        {
-            currentDirection = UP;
-        }
-        else if (currentDirection == UP && IsCloseTo(currentPosition, -84f, 84f))
-        {
-            currentDirection = RIGHT;
-        }
+        animator.SetBool("IsDead", true);
     }
 
-
+    // ****** HELPER FUNCTIONS ******
     private bool IsCloseTo(Vector3 currentPosition, float targetX, float targetY, float range = 1f)
     {
         return Mathf.Abs(currentPosition.x - targetX) <= range && Mathf.Abs(currentPosition.y - targetY) <= range;
@@ -82,36 +89,7 @@ public class PacStudentController : MonoBehaviour
 
 
 
-    private void MoveUp()
-    {
-        animator.SetInteger("Direction", UP);
-        transform.Translate(transform.up * speed * Time.deltaTime);
-    }
-
-    private void MoveDown()
-    {
-        animator.SetInteger("Direction", DOWN);
-        transform.Translate(transform.up * -speed * Time.deltaTime);
-    }
-
-    private void MoveLeft()
-    {
-        animator.SetInteger("Direction", LEFT);
-        transform.Translate(transform.right * speed * Time.deltaTime);
-    }
-
-    private void MoveRight()
-    {
-        animator.SetInteger("Direction", RIGHT);
-        transform.Translate(transform.right * -speed * Time.deltaTime);
-    }
-
-
-
     // Example of setting the IsDead parameter:
     // This can be triggered by other events, such as collision with ghosts.
-    public void Die()
-    {
-        animator.SetBool("IsDead", true);
-    }
+    
 }
