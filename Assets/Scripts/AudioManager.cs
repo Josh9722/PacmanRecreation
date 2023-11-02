@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    public AudioSource audioSource;  
-    public AudioClip introMusic;
+    public AudioSource musicAudioSource;
+    public AudioSource effectsAudioSource;
     public AudioClip normalGhostMusic;
     public AudioClip scaredGhostMusic;
     public AudioClip deadGhostMusic;
@@ -16,66 +16,56 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        PlayIntroMusic();   
-    }
-
-    public void PlayIntroMusic()
-    {
-        audioSource.loop = false;
-        audioSource.clip = introMusic;
-        audioSource.Play();
-        
-        //When the intro music finishes, play the normal ghost music
-        Invoke("PlayNormalGhostMusic", introMusic.length);
+        PlayNormalGhostMusic();   
     }
 
     public void PlayNormalGhostMusic()
     {
-        audioSource.clip = normalGhostMusic;
-        audioSource.loop = true;
-        audioSource.Play();
+        musicAudioSource.clip = normalGhostMusic;
+        musicAudioSource.loop = true;
+        musicAudioSource.Play();
     }
 
     public void PlayScaredGhostMusic()
     {
-        audioSource.clip = scaredGhostMusic;
-        audioSource.loop = true;
-        audioSource.Play();
+        musicAudioSource.clip = scaredGhostMusic;
+        musicAudioSource.loop = true;
+        musicAudioSource.Play();
     }
 
     public void PlayDeadGhostMusic()
     {
-        audioSource.clip = deadGhostMusic;
-        audioSource.loop = true;
-        audioSource.Play();
+        musicAudioSource.clip = deadGhostMusic;
+        musicAudioSource.loop = true;
+        musicAudioSource.Play();
     }
 
     public void PlayPacStudentMove()
     {
-        audioSource.clip = pacStudentMove;
-        audioSource.loop = false;
-        audioSource.Play();
+        effectsAudioSource.clip = pacStudentMove;
+        effectsAudioSource.loop = false;
+        effectsAudioSource.Play();
     }
 
     public void PlayPelletEaten()
     {
-        audioSource.clip = pelletEaten;
-        audioSource.loop = false;
-        audioSource.Play();
+        effectsAudioSource.clip = pelletEaten;
+        effectsAudioSource.loop = false;
+        effectsAudioSource.Play();
     }
 
     public void PlayPacStudentCollidesWall()
     {
-        audioSource.clip = pacStudentCollidesWall;
-        audioSource.loop = false;
-        audioSource.Play();
+        effectsAudioSource.clip = pacStudentCollidesWall;
+        effectsAudioSource.loop = false;
+        effectsAudioSource.Play();
     }
 
     public void PlayPacStudentDeath()
     {
-        audioSource.clip = pacStudentDeath;
-        audioSource.loop = false;
-        audioSource.Play();
+        musicAudioSource.clip = pacStudentDeath;
+        musicAudioSource.loop = false;
+        musicAudioSource.Play();
     }
 
     

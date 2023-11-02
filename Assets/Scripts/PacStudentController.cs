@@ -97,8 +97,21 @@ public class PacStudentController : MonoBehaviour
     }
 
     private void onTileVisited() {
-        // Update pellet to emptyTilePrefab
-        lastVisitedTile = GetGridTile(transform.position); 
+        // Updating lastVisited
+        lastVisitedTile = GetGridTile(transform.position);
+
+        // Play pellet eaten sound
+        // find gameobject named AudioManager
+        GameObject audioManagerObject = GameObject.Find("AudioManager");
+        AudioManager audioManager = audioManagerObject.GetComponent<AudioManager>();
+        if (lastVisitedTile.name.Contains("pellet")) {
+            audioManager.PlayPelletEaten();
+        } else { 
+            audioManager.PlayPacStudentMove();
+        }
+            
+
+        // Removing pellets
         if (lastVisitedTile.name.Contains("standardpellet")) {
             // Change properties to match emptyTilePrefab
             lastVisitedTile.GetComponent<SpriteRenderer>().sprite = emptyTilePrefab.GetComponent<SpriteRenderer>().sprite;
@@ -110,6 +123,8 @@ public class PacStudentController : MonoBehaviour
             lastVisitedTile.GetComponent<SpriteRenderer>().sprite = emptyTilePrefab.GetComponent<SpriteRenderer>().sprite;
             lastVisitedTile.name = emptyTilePrefab.name;
         }
+
+        
     }
 
 
