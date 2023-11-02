@@ -561,6 +561,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388004595}
   m_CullTransparentMesh: 1
+--- !u!1 &407321982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3847652926854984703, guid: d7552711946e24c138eadc99a65fe2f5, type: 3}
+  m_PrefabInstance: {fileID: 1957008494}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &527289639
 GameObject:
   m_ObjectHideFlags: 0
@@ -21242,6 +21247,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3343394467404558921, guid: d7552711946e24c138eadc99a65fe2f5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3344302741890688257, guid: d7552711946e24c138eadc99a65fe2f5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -24895,11 +24904,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5624496789779209456, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -84
+      value: -84.96
       objectReference: {fileID: 0}
     - target: {fileID: 5624496789779209456, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 60
+      value: 85
       objectReference: {fileID: 0}
     - target: {fileID: 5624496789779209456, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
       propertyPath: m_LocalPosition.z
@@ -24937,6 +24946,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PacStudentCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 5624496789779209461, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
+      propertyPath: map
+      value: 
+      objectReference: {fileID: 762134728}
+    - target: {fileID: 5624496789779209461, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
+      propertyPath: lastVisitedTile
+      value: 
+      objectReference: {fileID: 407321982}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class PacStudentController : MonoBehaviour
 {
+    public Transform map; 
+    public GameObject lastVisitedTile; // Ignore targeting for current tile 
+
+
     // ****** Movement Specific Members ******
     public float speed = 4f;
     private Vector3 lastInput = Vector3.zero;
     private Vector3 currentInput;
     
     // Lerping Variables
-    private bool isMoving = false;
-    private float startTime;
-    private float journeyLength;
+    private bool isLerping = false;
 
 
     // ****** Animator Specific Members ****** 
@@ -26,6 +28,9 @@ public class PacStudentController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+
+        // Starting top left corner
+        //transform.position = lastVisitedTile.transform.position;
     }
 
     void Update()
@@ -33,8 +38,25 @@ public class PacStudentController : MonoBehaviour
         // Get player input
         HandleInput(); 
 
-        // Update character position 
-        HandleCharacterMovement();
+        // If pacstudent is not lerping
+        if (!isLerping) { 
+            // If can move in the direction of lastInput
+            if (IsWalkable(transform.position + lastInput, lastInput)) {
+                currentInput = lastInput;
+
+                // Lerp to the next tile
+                GameObject gridTile = GetGridTile(transform.position + currentInput);
+                Vector3 gridTargetPosition = gridTile.transform.position;
+                StartCoroutine(LerpToPosition(gridTargetPosition));
+            } else { 
+                // If can move in the direction of currentInput
+                if (IsWalkable(transform.position + currentInput, lastInput)) {
+                    // Lerp to the next tile
+                } else {
+                    // Stop moving
+                }
+            }
+        }
 
         // Update animation
         HandleMovementAnimation(); 
@@ -54,63 +76,98 @@ public class PacStudentController : MonoBehaviour
         }
     }
 
-    private void HandleCharacterMovement() {
-        // If not lerping, move PacStudent to the target position
-        if (!isMoving)
+    private IEnumerator LerpToPosition(Vector3 targetPos)
+    {
+        isLerping = true;
+        float journeyLength = Vector3.Distance(transform.position, targetPos);
+        float startTime = Time.time;
+
+        while (Time.time < startTime + journeyLength / speed)
         {
-            TryMove(lastInput);
+            float distanceCovered = (Time.time - startTime) * speed;
+            float fractionOfJourney = distanceCovered / journeyLength;
+            transform.position = Vector3.Lerp(transform.position, targetPos, fractionOfJourney);
+            yield return null;
         }
 
-        LerpMovement(); 
+        transform.position = targetPos;
+        lastVisitedTile = GetGridTile(transform.position);
+        isLerping = false;
     }
 
-    private void TryMove(Vector3 direction)
+
+    private bool IsWalkable(Vector3 position, Vector3 direction)
     {
-        // Calculate the target position based on the input direction
-        currentInput = transform.position + direction;
-
-        // Check if the target position is walkable (e.g., not a wall)
-        if (IsWalkable(currentInput))
+        // Iterate through all objects in the map
+        foreach (Transform quadrant in map.transform)
         {
-            isMoving = true;
-            startTime = Time.time;
-            journeyLength = Vector3.Distance(transform.position, currentInput);
-        }
-    }
-
-    private void LerpMovement()
-    {
-        if (isMoving)
-        {
-            float journeyLength = Vector3.Distance(transform.position, currentInput);
-            float journeyTime = journeyLength / speed;
-
-            // Calculate the journey fraction based on time
-            float journeyFraction = (Time.time - startTime) / journeyTime;
-            if (float.IsNaN(journeyFraction)) {
-                journeyFraction = 0f;
-            } 
-
-            // Ensure journeyFraction is within [0, 1]
-            journeyFraction = Mathf.Clamp01(journeyFraction);
-
-            // Lerp PacStudent's position
-            transform.position = Vector3.Lerp(transform.position, currentInput, journeyFraction);
-
-            // Check if PacStudent has reached the target position
-            if (journeyFraction >= 1.0f)
+            foreach (Transform row in quadrant)
             {
-                isMoving = false;
-                // TODO: Stop PacStudent's movement audio and animation here
+                foreach (Transform image in row)
+                {
+                    if (!image.gameObject.name.Contains("standardpellet") || image.gameObject == lastVisitedTile)
+                    {
+                        continue; // Skip this tile if it is not a standard pellet
+                    }
+ 
+                    Vector3 compareDistance = image.position;
+                    // If going Left or Right, tile must match y axis 
+                    if (direction.y == 0)
+                    {
+                        if (compareDistance.y != position.y)
+                        {
+                            continue;
+                        }
+                    }
+                    // If going Up or Down, tile must match x axis
+                    else if (direction.x == 0)
+                    {
+                        if (compareDistance.x != position.x)
+                        {
+                            continue;
+                        }
+                    } 
+
+                    float distanceThreshold = 6f; // Adjust this value as needed
+                    if (IsCloseTo(position, compareDistance.x, compareDistance.y, distanceThreshold))
+                    {
+                        //Debug.Log("Can Walkj on " + image.gameObject.name + " at " + image.position + " from " + position + " with threshold " + distanceThreshold + " and direction " + direction);
+                        return true; // Tile found at the given position
+                    }
+                }
             }
         }
+
+        return false; // No tile found at the given position
     }
 
-
-
-    private bool IsWalkable(Vector3 position)
+    private GameObject GetGridTile(Vector3 position)
     {
-        return true; 
+        // Iterate through all objects in the map
+        foreach (Transform quadrant in map.transform)
+        {
+            foreach (Transform row in quadrant)
+            {
+                foreach (Transform image in row)
+                {
+                    if (image.gameObject == lastVisitedTile)
+                    {
+                        continue; // Skip this tile if it is not a standard pellet
+                    }
+
+                    // Find position of middle of tile (i.e subtract width) 
+                    Vector3 middleOfTile = image.position;
+
+                    float distanceThreshold = 6f; // Adjust this value as needed
+                    if (IsCloseTo(position, middleOfTile.x, middleOfTile.y, distanceThreshold))
+                    {
+                        return image.gameObject; 
+                    }
+                }
+            }
+        }
+
+        return null; // No tile found at the given position
     }
 
 
@@ -120,19 +177,19 @@ public class PacStudentController : MonoBehaviour
     void HandleMovementAnimation()
     {
         // Set currentAnimationDirection basesd on lastInput
-        if (lastInput.x > 0)
+        if (currentInput.x > 0)
         {
             animator.SetInteger("Direction", RIGHT);
         }
-        else if (lastInput.x < 0)
+        else if (currentInput.x < 0)
         {
             animator.SetInteger("Direction", LEFT);
         }
-        else if (lastInput.y > 0)
+        else if (currentInput.y > 0)
         {
             animator.SetInteger("Direction", UP);
         }
-        else if (lastInput.y < 0)
+        else if (currentInput.y < 0)
         {
             animator.SetInteger("Direction", DOWN);
         }
