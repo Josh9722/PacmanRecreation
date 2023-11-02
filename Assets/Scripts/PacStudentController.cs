@@ -28,9 +28,6 @@ public class PacStudentController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-
-        // Starting top left corner
-        //transform.position = lastVisitedTile.transform.position;
     }
 
     void Update()
@@ -110,11 +107,12 @@ public class PacStudentController : MonoBehaviour
                         continue; // Skip this tile if it is not a standard pellet
                     }
  
-                    Vector3 compareDistance = image.position;
-                    // If going Left or Right, tile must match y axis 
+                    Vector3 compareDistance = image.position; 
+                    float leeway = 0.1f;
+                    // If going Left or Right, tile must match y axis
                     if (direction.y == 0)
                     {
-                        if (compareDistance.y != position.y)
+                        if (Mathf.Abs(compareDistance.y - position.y) > leeway)
                         {
                             continue;
                         }
@@ -122,11 +120,11 @@ public class PacStudentController : MonoBehaviour
                     // If going Up or Down, tile must match x axis
                     else if (direction.x == 0)
                     {
-                        if (compareDistance.x != position.x)
+                        if (Mathf.Abs(compareDistance.x - position.x) > leeway)
                         {
                             continue;
                         }
-                    } 
+                    }
 
                     float distanceThreshold = 6f; // Adjust this value as needed
                     if (IsCloseTo(position, compareDistance.x, compareDistance.y, distanceThreshold))
