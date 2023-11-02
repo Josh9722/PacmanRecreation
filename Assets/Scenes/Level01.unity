@@ -6327,7 +6327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &812611301
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13390,6 +13390,7 @@ GameObject:
   - component: {fileID: 1902935908}
   - component: {fileID: 1902935907}
   - component: {fileID: 1902935906}
+  - component: {fileID: 1902935910}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -13480,6 +13481,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1902935910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902935905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe719869532c3f244ac4d01edb513a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exitButton: {fileID: 1725270011}
+  Score: {fileID: 1417564280}
+  gameTimer: {fileID: 229497154}
+  ghostTimer: {fileID: 812611300}
+  Lives: {fileID: 1753583607}
 --- !u!1 &1908380475
 GameObject:
   m_ObjectHideFlags: 0
