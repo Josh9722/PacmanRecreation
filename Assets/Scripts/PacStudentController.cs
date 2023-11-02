@@ -29,6 +29,7 @@ public class PacStudentController : MonoBehaviour
 
     void Start()
     {
+        dustParticleSystem.Stop();
         animator = GetComponent<Animator>();
     }
 
