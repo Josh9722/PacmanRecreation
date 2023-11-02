@@ -29880,11 +29880,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db6f137b4a08154b8b2b52b847d98c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cherryPrefab: {fileID: 0}
+  cherryPrefab: {fileID: 2455031381943596649, guid: a3b56c57850659d4c9118ed90253a65f, type: 3}
   spawnInterval: 10
-  moveSpeed: 5
-  timer: 0
-  mainCamera: {fileID: 0}
 --- !u!4 &2062227927
 Transform:
   m_ObjectHideFlags: 0
