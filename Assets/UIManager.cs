@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour
 
         // Enable player control
         pacStudentController.hasGameStarted = true;
+        pacStudentController.cherryController.startSpawning();
         
         // Start normal music 
         audioManager.PlayNormalGhostMusic();

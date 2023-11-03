@@ -9,12 +9,16 @@ public class CherryController : MonoBehaviour
     private float moveSpeed = 1.0f; // Cherry movement speed
     private float timer;
     private Camera mainCamera;
+    public LinkedList<GameObject> activeCherrys = new LinkedList<GameObject>();
 
     private void Start()
     {
         timer = spawnInterval;
         mainCamera = Camera.main;
 
+    }
+
+    public void startSpawning() {
         // Start spawning cherries
         StartCoroutine(SpawnCherries());
     }
@@ -30,6 +34,7 @@ public class CherryController : MonoBehaviour
 
             // Instantiate the cherry at the spawn position
             GameObject cherry = Instantiate(cherryPrefab, spawnPosition, Quaternion.identity);
+            activeCherrys.AddLast(cherry);
 
             // Move the cherry
             StartCoroutine(MoveCherry(cherry));
@@ -83,6 +88,7 @@ public class CherryController : MonoBehaviour
         {
             // Exterminate...Exterminate
             Destroy(cherry);
+            activeCherrys.Remove(cherry);
         }
     }
 

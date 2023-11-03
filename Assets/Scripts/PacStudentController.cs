@@ -15,6 +15,7 @@ public class PacStudentController : MonoBehaviour
     public GameObject gameManagers;
     private Coroutine loseLifeCoroutine;
     public GameObject gameOverText;
+    public CherryController cherryController;
 
     // Managers
     private MapManager mapManager;
@@ -51,7 +52,8 @@ public class PacStudentController : MonoBehaviour
         mapManager = gameManagers.GetComponentInChildren<MapManager>();
         audioManager = gameManagers.GetComponentInChildren<AudioManager>();
         ghostManager = gameManagers.GetComponentInChildren<GhostManager>();
-        
+        cherryController = gameManagers.GetComponent<CherryController>();
+
         // Find In Scene
         hudManager = GameObject.Find("HUD").GetComponent<HUDManager>();
 
@@ -68,6 +70,7 @@ public class PacStudentController : MonoBehaviour
         if (!hasGameStarted) { 
             return; 
         }
+        checkForBonusCherryCollision();
 
         if (checkForGhostCollision()) { 
             // If already on die cooldown then dont do anything 
@@ -442,6 +445,22 @@ public class PacStudentController : MonoBehaviour
             }
         }
         return false; 
+    }
+
+    private void checkForBonusCherryCollision(){ 
+        // Check if pacman is colliding with the bonus cherry
+        foreach (GameObject cherry in cherryController.activeCherrys) {
+            Debug.Log("Cherry!");
+            if (GetComponent<Collider2D>().IsTouching(cherry.GetComponent<Collider2D>()))
+            {
+                Debug.Log("Cherry Collision");
+                // Add points 
+                hudManager.addPoints(100);
+
+                // Set invisible
+                cherry.SetActive(false);
+            }
+        }
     }
 
     public void GameOver()
