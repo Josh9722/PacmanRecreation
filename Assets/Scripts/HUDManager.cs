@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class HUDManager : MonoBehaviour
 {
+    public GameObject gameManagers;
+
     // Model
     public int score = 0;
 
@@ -17,8 +19,8 @@ public class HUDManager : MonoBehaviour
     public GameObject Lives;
 
     // Timers
-    private Timer gameTimerTimer;
-    private Timer ghostTimerTimer;
+    public Timer gameTimerTimer;
+    public Timer ghostTimerTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +30,7 @@ public class HUDManager : MonoBehaviour
         gameTimerTimer.Start();
 
         // Counts down from 20 seconds
-        ghostTimerTimer = new Timer(20.0f, countDown: true);    
+        ghostTimerTimer = new Timer(10.0f, countDown: true);    
     }
 
     // Update is called once per frame
@@ -70,6 +72,12 @@ public class HUDManager : MonoBehaviour
     public void enableGhostTimer() { 
         ghostTimer.SetActive(true);
         ghostTimerTimer.Start();
+    }
+
+    public void resetGhostTimer() { 
+        ghostTimerTimer.Reset();
+        ghostTimerTimer.setInital(10.0f);
+        ghostTimer.SetActive(false);
     }
 
 

@@ -17,6 +17,7 @@ public class PacStudentController : MonoBehaviour
     private MapManager mapManager;
     private AudioManager audioManager;
     private HUDManager hudManager; 
+    private GhostManager ghostManager;
 
 
     // ****** Movement Specific Members ******
@@ -41,6 +42,7 @@ public class PacStudentController : MonoBehaviour
         // Get Managers from GameManager
         mapManager = gameManagers.GetComponentInChildren<MapManager>();
         audioManager = gameManagers.GetComponentInChildren<AudioManager>();
+        ghostManager = gameManagers.GetComponentInChildren<GhostManager>();
         
         // Find In Scene
         hudManager = GameObject.Find("HUD").GetComponent<HUDManager>();
@@ -172,6 +174,9 @@ public class PacStudentController : MonoBehaviour
             // Change properties to match emptyTilePrefab
             lastVisitedTile.GetComponent<SpriteRenderer>().sprite = emptyTilePrefab.GetComponent<SpriteRenderer>().sprite;
             lastVisitedTile.name = emptyTilePrefab.name;
+
+            // Notify managers
+            ghostManager.powerPelletEaten();        
         }
 
         

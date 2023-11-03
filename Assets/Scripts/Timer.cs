@@ -51,9 +51,18 @@ public class Timer
         return false;
     }
 
+    public bool IsPaused() { 
+        return isPaused;
+    }
+
     public void Reset()
     {
         elapsedTime = 0f;
+        isPaused = true; 
+    }
+
+    public void setInital(float seconds) { 
+        elapsedTime = seconds;
     }
 
     public void Pause()
