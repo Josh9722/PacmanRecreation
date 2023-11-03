@@ -6,8 +6,10 @@ public class PacStudentController : MonoBehaviour
 {
     public GameObject emptyTilePrefab; // Prefab to replace standardpellet with
     public Transform map; 
-    public GameObject lastVisitedTile; // Ignore targeting for current tile 
-    public ParticleSystem dustParticleSystem;
+    public GameObject lastVisitedTile; // Ignore IsWalkable targeting for current tile 
+    private GameObject lastCollisionTile; // Stops repeated collision with same tile when pacman is stuck 
+    public ParticleSystem walkingParticleSystem;
+    public ParticleSystem bumpParticleSystem;
 
 
     // ****** Movement Specific Members ******
@@ -29,7 +31,9 @@ public class PacStudentController : MonoBehaviour
 
     void Start()
     {
-        dustParticleSystem.Stop();
+        walkingParticleSystem.Stop();
+        bumpParticleSystem.Stop();
+
         animator = GetComponent<Animator>();
     }
 
@@ -43,6 +47,9 @@ public class PacStudentController : MonoBehaviour
             // If can move in the direction of lastInput
             if (IsWalkable(transform.position + lastInput, lastInput)) {
                 currentInput = lastInput;
+                // When moving direction is changed reset the collisionTile so it can be hit again
+                lastCollisionTile = null;
+                bumpParticleSystem.Stop();
 
                 // Lerp to the next tile
                 GameObject gridTile = GetGridTile(transform.position + currentInput);
@@ -56,6 +63,20 @@ public class PacStudentController : MonoBehaviour
                     StartCoroutine(LerpToPosition(gridTargetPosition));
                 } else {
                     // Stop moving as both the lastInput and currentInput are not walkable
+
+                    // If stopped moving must of hit something. 
+                    GameObject collisionTile = GetGridTile(transform.position + currentInput);
+                    if (collisionTile != lastCollisionTile) {
+                        // Play bump sound
+                        GameObject audioManagerObject = GameObject.Find("AudioManager");
+                        AudioManager audioManager = audioManagerObject.GetComponent<AudioManager>();
+                        audioManager.PlayPacStudentCollidesWall();
+                        lastCollisionTile = collisionTile;
+
+                        // Play bump particle effect 
+                        bumpParticleSystem.Play();
+                        Debug.Log("test");
+                    }
                 }
             }
         }
@@ -81,7 +102,7 @@ public class PacStudentController : MonoBehaviour
     private IEnumerator LerpToPosition(Vector3 targetPos)
     {
         isLerping = true;
-        dustParticleSystem.Play();
+        walkingParticleSystem.Play();
         float journeyLength = Vector3.Distance(transform.position, targetPos);
         float startTime = Time.time;
         float journeyTime = journeyLength / speed;
@@ -96,7 +117,7 @@ public class PacStudentController : MonoBehaviour
         }
 
         onTileVisited();
-        dustParticleSystem.Stop();
+        walkingParticleSystem.Stop();
         isLerping = false;
     }
 
