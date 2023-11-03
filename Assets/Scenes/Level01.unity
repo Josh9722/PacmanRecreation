@@ -34858,6 +34858,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 762134728}
     - target: {fileID: 5624496789779209461, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
+      propertyPath: mapManager
+      value: 
+      objectReference: {fileID: 1375976575}
+    - target: {fileID: 5624496789779209461, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
       propertyPath: emptyTilePrefab
       value: 
       objectReference: {fileID: 3580902826908558128, guid: f174f02db9560405d95f4b61d1237255, type: 3}

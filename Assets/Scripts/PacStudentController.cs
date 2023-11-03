@@ -7,9 +7,11 @@ public class PacStudentController : MonoBehaviour
     public GameObject emptyTilePrefab; // Prefab to replace standardpellet with
     public Transform map; 
     public GameObject lastVisitedTile; // Ignore IsWalkable targeting for current tile 
-    private GameObject lastCollisionTile; // Stops repeated collision with same tile when pacman is stuck 
+    private GameObject lastCollisionTile; // Stops repeated collision with same tile when pacman is stuck
+    private GameObject lastTeleportExit; // Used to stop teleporting back and forth between teleporters 
     public ParticleSystem walkingParticleSystem;
     public ParticleSystem bumpParticleSystem;
+    public GameObject mapManager;
 
 
     // ****** Movement Specific Members ******
@@ -51,16 +53,30 @@ public class PacStudentController : MonoBehaviour
                 lastCollisionTile = null;
                 bumpParticleSystem.Stop();
 
-                // Lerp to the next tile
+
+                // Naviagte to the next tile
                 GameObject gridTile = GetGridTile(transform.position + currentInput);
-                Vector3 gridTargetPosition = gridTile.transform.position;
-                StartCoroutine(LerpToPosition(gridTargetPosition));
+                if (isTeleporter(gridTile)) {
+                    useTeleporter(gridTile);
+                } else {
+                    Vector3 gridTargetPosition = gridTile.transform.position;
+                    StartCoroutine(LerpToPosition(gridTargetPosition));
+                }
+
             } else { 
                 // If can move in the direction of currentInput
                 if (IsWalkable(transform.position + currentInput, currentInput)) {
                     GameObject gridTile = GetGridTile(transform.position + currentInput);
-                    Vector3 gridTargetPosition = gridTile.transform.position;
-                    StartCoroutine(LerpToPosition(gridTargetPosition));
+
+
+                    // Naviagte to the next tile
+                    if (isTeleporter(gridTile)) {
+                        useTeleporter(gridTile);
+                    } else {
+                        Vector3 gridTargetPosition = gridTile.transform.position;
+                        StartCoroutine(LerpToPosition(gridTargetPosition));
+                    }
+                    
                 } else {
                     // Stop moving as both the lastInput and currentInput are not walkable
 
@@ -75,7 +91,6 @@ public class PacStudentController : MonoBehaviour
 
                         // Play bump particle effect 
                         bumpParticleSystem.Play();
-                        Debug.Log("test");
                     }
                 }
             }
@@ -206,6 +221,42 @@ public class PacStudentController : MonoBehaviour
         return false; // No tile found at the given position
     }
 
+    private bool isTeleporter(GameObject tile) { 
+        // Don't act as a teleporter if just exited from this teleporter
+        if (tile == lastTeleportExit) {
+            return false; 
+        }
+        
+        // Check mapManager
+        MapManager mapManagerScript = mapManager.GetComponent<MapManager>();
+        if (mapManagerScript.leftTeleporters[0] == tile || mapManagerScript.leftTeleporters[1] == tile) {
+            return true; 
+        } else if (mapManagerScript.rightTeleporters[0] == tile || mapManagerScript.rightTeleporters[1] == tile) {
+            return true; 
+        }
+
+        return false; 
+    }
+
+    private void useTeleporter(GameObject tile) { 
+        isLerping = false; 
+
+        MapManager mapManagerScript = mapManager.GetComponent<MapManager>();
+        if (mapManagerScript.leftTeleporters[0] == tile) {
+            lastTeleportExit = mapManagerScript.rightTeleporters[0];
+            transform.position = mapManagerScript.rightTeleporters[0].transform.position;
+        } else if (mapManagerScript.leftTeleporters[1] == tile) {
+            lastTeleportExit = mapManagerScript.rightTeleporters[1];
+            transform.position = mapManagerScript.rightTeleporters[1].transform.position;
+        } else if (mapManagerScript.rightTeleporters[0] == tile) {
+            lastTeleportExit = mapManagerScript.leftTeleporters[0];
+            transform.position = mapManagerScript.leftTeleporters[0].transform.position;
+        } else if (mapManagerScript.rightTeleporters[1] == tile) {
+            lastTeleportExit = mapManagerScript.leftTeleporters[1];
+            transform.position = mapManagerScript.leftTeleporters[1].transform.position;
+        }
+    }
+
     private GameObject GetGridTile(Vector3 position)
     {
         // Iterate through all objects in the map
@@ -271,9 +322,4 @@ public class PacStudentController : MonoBehaviour
         return Mathf.Abs(currentPosition.x - targetX) <= range && Mathf.Abs(currentPosition.y - targetY) <= range;
     }
 
-
-
-    // Example of setting the IsDead parameter:
-    // This can be triggered by other events, such as collision with ghosts.
-    
 }
