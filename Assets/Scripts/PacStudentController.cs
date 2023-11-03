@@ -11,7 +11,11 @@ public class PacStudentController : MonoBehaviour
     private GameObject lastTeleportExit; // Used to stop teleporting back and forth between teleporters 
     public ParticleSystem walkingParticleSystem;
     public ParticleSystem bumpParticleSystem;
-    public GameObject mapManager;
+    public GameObject gameManagers;
+
+    // Managers
+    private MapManager mapManager;
+    private AudioManager audioManager;
 
 
     // ****** Movement Specific Members ******
@@ -33,6 +37,11 @@ public class PacStudentController : MonoBehaviour
 
     void Start()
     {
+        // Get Managers from GameManager
+        mapManager = gameManagers.GetComponentInChildren<MapManager>();
+        audioManager = gameManagers.GetComponentInChildren<AudioManager>();
+        
+
         walkingParticleSystem.Stop();
         bumpParticleSystem.Stop();
 
@@ -84,8 +93,6 @@ public class PacStudentController : MonoBehaviour
                     GameObject collisionTile = GetGridTile(transform.position + currentInput);
                     if (collisionTile != lastCollisionTile) {
                         // Play bump sound
-                        GameObject audioManagerObject = GameObject.Find("AudioManager");
-                        AudioManager audioManager = audioManagerObject.GetComponent<AudioManager>();
                         audioManager.PlayPacStudentCollidesWall();
                         lastCollisionTile = collisionTile;
 
@@ -141,9 +148,6 @@ public class PacStudentController : MonoBehaviour
         lastVisitedTile = GetGridTile(transform.position);
 
         // Play pellet eaten sound
-        // find gameobject named AudioManager
-        GameObject audioManagerObject = GameObject.Find("AudioManager");
-        AudioManager audioManager = audioManagerObject.GetComponent<AudioManager>();
         if (lastVisitedTile.name.Contains("pellet")) {
             audioManager.PlayPelletEaten();
         } else { 
