@@ -8,7 +8,7 @@ public class GhostManager : MonoBehaviour
     public GameObject[] ghosts = new GameObject[4];
     private Animator[] animators = new Animator[4];
 
-    private int currentState = 1; // 1 = Alive, 2 = Scared, 3 = Recovery, Dead
+    public int currentState = 1; // 1 = Alive, 2 = Scared, 3 = Recovery, Dead
 
     private MapManager mapManager;
     private AudioManager audioManager;

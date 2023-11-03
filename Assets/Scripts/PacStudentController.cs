@@ -9,15 +9,21 @@ public class PacStudentController : MonoBehaviour
     public GameObject lastVisitedTile; // Ignore IsWalkable targeting for current tile 
     private GameObject lastCollisionTile; // Stops repeated collision with same tile when pacman is stuck
     private GameObject lastTeleportExit; // Used to stop teleporting back and forth between teleporters 
+    private GameObject spawnPoint; 
     public ParticleSystem walkingParticleSystem;
     public ParticleSystem bumpParticleSystem;
     public GameObject gameManagers;
+    private Coroutine loseLifeCoroutine;
 
     // Managers
     private MapManager mapManager;
     private AudioManager audioManager;
     private HUDManager hudManager; 
     private GhostManager ghostManager;
+
+    // Model
+    public int lives = 3;
+    public bool onDieCooldown = false; 
 
 
     // ****** Movement Specific Members ******
@@ -51,10 +57,24 @@ public class PacStudentController : MonoBehaviour
         bumpParticleSystem.Stop();
 
         animator = GetComponent<Animator>();
+
+        spawnPoint = lastVisitedTile; 
     }
 
     void Update()
     {
+        if (checkForGhostCollision()) { 
+            // If already on die cooldown then dont do anything 
+            if (onDieCooldown) { 
+
+            } else {
+                teleportToSpawn(); 
+            }
+            return; 
+        } else { 
+            onDieCooldown = false; 
+        }
+
         // Get player input
         HandleInput(); 
 
@@ -151,6 +171,10 @@ public class PacStudentController : MonoBehaviour
     private void onTileVisited() {
         // Updating lastVisited
         lastVisitedTile = GetGridTile(transform.position);
+
+        if (lastVisitedTile == null) { 
+            return; 
+        } 
 
         // Play pellet eaten sound
         if (lastVisitedTile.name.Contains("pellet")) {
@@ -272,6 +296,17 @@ public class PacStudentController : MonoBehaviour
         }
     }
 
+    private void teleportToSpawn() { 
+        isLerping = false; 
+        transform.position = spawnPoint.transform.position;
+
+        if (loseLifeCoroutine != null)
+        {
+            StopCoroutine(loseLifeCoroutine);
+        }
+        loseLifeCoroutine = StartCoroutine(loseLife());
+    }
+
     private GameObject GetGridTile(Vector3 position)
     {
         // Iterate through all objects in the map
@@ -326,6 +361,55 @@ public class PacStudentController : MonoBehaviour
         }
     }
 
+    private IEnumerator loseLife() {
+        yield return new WaitForSeconds(0.1f);
+        if (onDieCooldown) {
+            yield break;
+        }
+        onDieCooldown = true;
+
+        if (lives == 1) { 
+            Die();
+            yield break;
+        } 
+
+        lives--;
+        hudManager.removeLife();
+
+        // Reset lastVisitedTile
+        lastVisitedTile = spawnPoint;
+
+        // Reset lastCollisionTile
+        lastCollisionTile = null;
+
+        // Reset lastTeleportExit
+        lastTeleportExit = null;
+
+        // Reset lastInput
+        lastInput = Vector3.zero;
+
+        // Reset currentInput
+        currentInput = Vector3.zero;
+
+        // Reset isLerping
+        isLerping = false;
+
+        // Reset animator
+        animator.SetInteger("Direction", 0);
+
+        // Reset walkingParticleSystem
+        walkingParticleSystem.Stop();
+
+        // Reset bumpParticleSystem
+        bumpParticleSystem.Stop();
+
+        transform.position = spawnPoint.transform.position;
+        Debug.Log(transform.position + " " + spawnPoint.transform.position);
+
+        loseLifeCoroutine = null;
+        onDieCooldown = false;
+    }
+
     public void Die()
     {
         animator.SetBool("IsDead", true);
@@ -336,5 +420,21 @@ public class PacStudentController : MonoBehaviour
     {
         return Mathf.Abs(currentPosition.x - targetX) <= range && Mathf.Abs(currentPosition.y - targetY) <= range;
     }
+
+    private bool checkForGhostCollision()
+    {
+        // Check if pacman is colliding with any of the ghosts
+        GameObject[] ghosts = mapManager.ghosts;
+        for (int i = 0; i < ghosts.Length; i++)
+        {
+            if (GetComponent<Collider2D>().IsTouching(ghosts[i].GetComponent<Collider2D>()))
+            {
+                return true; 
+            }
+        }
+        return false; 
+    }
+
+
 
 }
