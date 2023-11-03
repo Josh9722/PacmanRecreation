@@ -29969,6 +29969,10 @@ PrefabInstance:
       propertyPath: dustParticleSystem
       value: 
       objectReference: {fileID: 1786434928}
+    - target: {fileID: 5624496789779209463, guid: ee4832e67cd248c459aebda5020eb300, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
