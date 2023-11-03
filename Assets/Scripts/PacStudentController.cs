@@ -304,6 +304,8 @@ public class PacStudentController : MonoBehaviour
 
     private void teleportToSpawn() { 
         isLerping = false; 
+        currentInput = Vector3.zero;
+        lastInput = Vector3.zero;
         transform.position = spawnPoint.transform.position;
 
         if (loseLifeCoroutine != null)
