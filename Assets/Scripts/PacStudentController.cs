@@ -14,6 +14,7 @@ public class PacStudentController : MonoBehaviour
     public ParticleSystem bumpParticleSystem;
     public GameObject gameManagers;
     private Coroutine loseLifeCoroutine;
+    public GameObject gameOverText;
 
     // Managers
     private MapManager mapManager;
@@ -418,6 +419,7 @@ public class PacStudentController : MonoBehaviour
     public void Die()
     {
         animator.SetBool("IsDead", true);
+        GameOver();
     }
 
     // ****** HELPER FUNCTIONS ******
@@ -439,6 +441,38 @@ public class PacStudentController : MonoBehaviour
         }
         return false; 
     }
+
+    public void GameOver()
+    {
+        gameOverText.gameObject.SetActive(true);
+        hasGameStarted = false; // Stop game timer
+
+        hudManager.stopGameTimer();
+
+        // Check if the current score is a new high score or a faster time for the same high score
+        int highScore = PlayerPrefs.GetInt("HighScore", 0);
+        float highScoreTime = PlayerPrefs.GetFloat("HighScoreTime", float.MaxValue);
+
+        // Save if current score is greater or if the score is the same but the time is faster
+        int currentScore = hudManager.score;
+        float gameTimer = hudManager.gameTimerTimer.GetTime();
+        if (currentScore > highScore || (currentScore == highScore && gameTimer < highScoreTime))
+        {
+            PlayerPrefs.SetInt("HighScore", currentScore);
+            PlayerPrefs.SetFloat("HighScoreTime", gameTimer);
+            PlayerPrefs.Save();
+        }
+
+        StartCoroutine(ReturnToStartAfterDelay(3f));
+    }
+
+    IEnumerator ReturnToStartAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("StartScene"); 
+    }
+
+
 
 
 

@@ -36,6 +36,10 @@ public class HUDManager : MonoBehaviour
         gameTimerTimer.Start();
     }
 
+    public void stopGameTimer() {
+        gameTimerTimer.Pause();
+    }
+
     // Update is called once per frame
     void Update()
     {
