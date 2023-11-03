@@ -16,7 +16,7 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        PlayNormalGhostMusic();   
+        
     }
 
     public void PlayNormalGhostMusic()

@@ -24,6 +24,7 @@ public class PacStudentController : MonoBehaviour
     // Model
     public int lives = 3;
     public bool onDieCooldown = false; 
+    public bool hasGameStarted = false; 
 
 
     // ****** Movement Specific Members ******
@@ -63,6 +64,10 @@ public class PacStudentController : MonoBehaviour
 
     void Update()
     {
+        if (!hasGameStarted) { 
+            return; 
+        }
+
         if (checkForGhostCollision()) { 
             // If already on die cooldown then dont do anything 
             if (onDieCooldown) { 

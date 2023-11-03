@@ -27,10 +27,13 @@ public class HUDManager : MonoBehaviour
     {
         // Counts upward to infinity 
         gameTimerTimer = new Timer(0.0f, countDown: false);
-        gameTimerTimer.Start();
 
         // Counts down from 20 seconds
         ghostTimerTimer = new Timer(10.0f, countDown: true);    
+    }
+
+    public void startGameTimer() {
+        gameTimerTimer.Start();
     }
 
     // Update is called once per frame
