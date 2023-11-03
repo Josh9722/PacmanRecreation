@@ -97,4 +97,8 @@ public class HUDManager : MonoBehaviour
             // Game Over:: TODO
         }
     }
+
+    public void addPoints(int points) { 
+        score += points;
+    }
 }

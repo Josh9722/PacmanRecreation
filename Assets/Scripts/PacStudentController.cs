@@ -16,6 +16,7 @@ public class PacStudentController : MonoBehaviour
     // Managers
     private MapManager mapManager;
     private AudioManager audioManager;
+    private HUDManager hudManager; 
 
 
     // ****** Movement Specific Members ******
@@ -41,6 +42,8 @@ public class PacStudentController : MonoBehaviour
         mapManager = gameManagers.GetComponentInChildren<MapManager>();
         audioManager = gameManagers.GetComponentInChildren<AudioManager>();
         
+        // Find In Scene
+        hudManager = GameObject.Find("HUD").GetComponent<HUDManager>();
 
         walkingParticleSystem.Stop();
         bumpParticleSystem.Stop();
@@ -160,6 +163,9 @@ public class PacStudentController : MonoBehaviour
             // Change properties to match emptyTilePrefab
             lastVisitedTile.GetComponent<SpriteRenderer>().sprite = emptyTilePrefab.GetComponent<SpriteRenderer>().sprite;
             lastVisitedTile.name = emptyTilePrefab.name;
+
+            // Add points 
+            hudManager.addPoints(10);
         }
 
         if (lastVisitedTile.name.Contains("powerpellet")) {
